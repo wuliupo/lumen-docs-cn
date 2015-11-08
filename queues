@@ -1,0 +1,425 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Queues - Lumen 中文文档
+</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="author" content="Laravel 中国">
+	<meta name="description" content="    Queues,配置信息,基本用法,更多调度的方法,队列闭包,启动队列监听,常驻队列线程,失败的工作,设置,Lumen 队列组件提供一个统一的 API 集成了许多不同的队列服务，队列允许你延后执行一个耗时的任务，例如延后至指定的时间才发送邮件，进而大幅的加快了应用程序处理请求的速度。,Lumen 支持 数据库, Beanstalkd, IronMQ, Amazon SQS, Redis, null,...
+">
+	<meta name="keywords" content="lumen,微框架,Laravel微框架,lumen中国,lumen中文,lumen框架中文,lumen文档,lumen框架中国,lumen中文文档,lumen教程">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if lte IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" href="assets/css/lumen.css">
+</head>
+<body class="docs language-php">
+
+	<span class="overlay"></span>
+
+	<nav class="main">
+		<div class="container">
+            <a href="./" class="brand">
+			<span class="logo">
+				<svg xmlns="http://www.w3.org/2000/svg" class="iconic iconic-lightbulb" width="128" height="128" viewBox="0 0 128 128">
+                    <g class="iconic-metadata">
+                        <title>Lightbulb</title>
+                    </g>
+                    <defs>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-0">
+                            <path d="M16.583 94h33.417v2.667l-39.083 6.375-.333-6.417z"></path>
+                        </clipPath>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-1">
+                            <path d="M64 57l-14.5 8.25v16.75h-34.25l-1.5-16 50.25-23z"></path>
+                        </clipPath>
+                    </defs>
+                    <g data-width="64" data-height="128" class="iconic-lightbulb-lg iconic-container iconic-lg" display="inline" transform="translate(32)">
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M44 122l-23.834 4.001"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M48 112l-32 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M48 102l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-0)" stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M48 92.5l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-6 iconic-property-stroke" d="M60 54l-20 9v18.75" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M24 68v13.75" fill="none"></path>
+                        <path d="M47 94h-30c-1.657 0-3.221-1.325-3.493-2.959l-1.014-6.082c-.272-1.634.85-2.959 2.507-2.959h34c1.657 0 2.779 1.325 2.507 2.959l-1.014 6.082c-.272 1.634-1.836 2.959-3.493 2.959z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M60 38l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M60 22l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M60 6l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M30 4.114l-26 11.886" fill="none"></path>
+                    </g>
+                    <g data-width="16" data-height="32" class="iconic-lightbulb-md iconic-container iconic-md" display="none" transform="scale(4) translate(8)">
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M5.5 31.5l5-1.429" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M4.5 29.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M4.5 27.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M4.5 25.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M12.5 18.5l-2 1v3.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M5.5 23v-1.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M14.5 11.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M14.5 5.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M10.5 1.5l-9 4" fill="none"></path>
+                        <path d="M11 25h-6c-.552 0-1.142-.425-1.316-.949l-.367-1.103c-.175-.524.131-.949.684-.949h8c.552 0 .858.425.684.949l-.367 1.103c-.175.524-.764.949-1.316.949z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                    <g data-width="10" data-height="16" class="iconic-lightbulb-sm iconic-container iconic-sm" display="none" transform="scale(8) translate(3)">
+                        <path d="M7 14c0 1.105-.895 2-2 2s-2-.895-2-2" class="iconic-lightbulb-screw iconic-property-accent iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M8 8l-2 1v2" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M4 10.5v.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M1 8l8-4" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M7 1l-6 3" fill="none"></path>
+                        <path d="M1.776 12.553l-.553-1.106c-.123-.247 0-.447.276-.447h7c.276 0 .4.2.276.447l-.553 1.106c-.124.247-.448.447-.724.447h-5c-.276 0-.6-.2-.724-.447z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                </svg>			</span>
+
+                Lumen
+            </a>
+
+			<div class="responsive-sidebar-nav">
+				<a href="#" class="toggle-slide menu-link btn">&#9776;</a>
+			</div>
+
+										
+			<ul class="main-nav">
+				<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+			</ul>
+		</div>
+	</nav>
+
+	    <nav id="slide-menu" class="slide-menu" role="navigation">
+
+        <div class="brand">
+            <a href="./">
+                <img src="assets/img/laravel-logo-white.png" height="50">
+            </a>
+        </div>
+
+        <ul class="slide-main-nav">
+            <li><a href="./">Home</a></li>
+            <li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+        </ul>
+
+        <div class="slide-docs-nav">
+            <h2>文档</h2>
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </div>
+
+    </nav>
+
+    <div class="docs-wrapper container">
+
+        <section class="sidebar">
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </section>
+
+        <article>
+            <h1>Queues</h1>
+<ul>
+<li><a href="#configuration">配置信息</a></li>
+<li><a href="#basic-usage">基本用法</a></li>
+<li><a href="#more-dispatch-methods">更多调度的方法</a></li>
+<li><a href="#queueing-closures">队列闭包</a></li>
+<li><a href="#running-the-queue-listener">启动队列监听</a></li>
+<li><a href="#daemon-queue-worker">常驻队列线程</a></li>
+<li><a href="#failed-jobs">失败的工作</a></li>
+</ul>
+<p><a name="configuration"></a></p>
+<h2>设置</h2>
+<p>Lumen 队列组件提供一个统一的 API 集成了许多不同的队列服务，队列允许你延后执行一个耗时的任务，例如延后至指定的时间才发送邮件，进而大幅的加快了应用程序处理请求的速度。</p>
+<p>Lumen 支持 数据库, <a href="http://kr.github.com/beanstalkd">Beanstalkd</a>, <a href="http://iron.io">IronMQ</a>, <a href="http://aws.amazon.com/sqs">Amazon SQS</a>, <a href="http://redis.io">Redis</a>, null, 和 synchronous (本地开发使用) 队列驱动器. <code>null</code>队列驱动器会对所有的工作进行忽略, 并且从来不会运行. </p>
+<p>请在  <code>.env</code>  文件里面配置 <code>QUEUE_DRIVER</code> 参数来指定队列驱动器. </p>
+<h3>Q队列数据表</h3>
+<p>为了能够使用 <code>database</code> 驱动，你需要建立一个数据表来保存工作。要使用一个迁移建立这个数据表，下面是表结构.</p>
+<pre><code>Schema::create('jobs', function(Blueprint $table)
+{
+    $table-&gt;bigIncrements('id');
+    $table-&gt;string('queue');
+    $table-&gt;text('payload');
+    $table-&gt;tinyInteger('attempts')-&gt;unsigned();
+    $table-&gt;tinyInteger('reserved')-&gt;unsigned();
+    $table-&gt;unsignedInteger('reserved_at')-&gt;nullable();
+    $table-&gt;unsignedInteger('available_at');
+    $table-&gt;unsignedInteger('created_at');
+});</code></pre>
+<h3>其他队列依赖</h3>
+<p>下面的依赖是使用对应的队列驱动所需的扩展包：</p>
+<ul>
+<li>Amazon SQS: <code>aws/aws-sdk-php</code></li>
+<li>Beanstalkd: <code>pda/pheanstalk ~3.0</code></li>
+<li>IronMQ: <code>iron-io/iron_mq ~1.5</code></li>
+<li>Redis: <code>predis/predis ~1.0</code></li>
+</ul>
+<p><a name="basic-usage"></a></p>
+<h2>基本用法</h2>
+<h4>推送一个工作至队列</h4>
+<p>应用程序中能够放进队列的工作都存放在 <code>App\Jobs</code> 目录下，所有的工作类都可以放到此文件夹下. </p>
+<blockquote>
+<p><strong>Note:</strong> 如果你想使用 <code>Queue</code> facade 的话, 请在 <code>bootstrap/app.php</code> 文件里面把 <code>$app-&gt;withFacades()</code>去掉注释. </p>
+</blockquote>
+<p>要推送一个新的工作至队列，请使用 <code>Queue::push</code> 方法：</p>
+<pre><code>Queue::push(new SendEmail($message));</code></pre>
+<p>你也可以在路由闭包内, 或者控制器内使用 <code>dispatch</code> 方法: </p>
+<pre><code>$this-&gt;dispatch(new SendEmail($message));</code></pre>
+<p>命令里会包含一个 <code>handle</code> 方法, 这个方法将会在队列执行时被调用。你可以在 <code>handle</code> 方法使用时提示传入任何你需要的依赖，而 <a href="5.0/container">服务容器</a> 会自动注入他们：</p>
+<pre><code>public function handle(UserRepository $users)
+{
+    //
+}</code></pre>
+<h4>指定队列使用特定连接</h4>
+<p>你也可指定队列工作送至指定的连接：</p>
+<pre><code>Queue::pushOn('emails', new SendEmail($message));</code></pre>
+<h4>发送相同的数据去多个队列工作</h4>
+<p>如果你需要发送一样的数据去几个不同的队列工作，你可以使用 <code>Queue::bulk</code> 方法：</p>
+<pre><code>Queue::bulk([new SendEmail($message), new AnotherCommand]);</code></pre>
+<h4>延迟执行一个工作</h4>
+<p>有时候你可能想要延迟执行一个队列工作，举例来说你希望一个队列工作在客户注册 15 分钟后才寄送 e-mail，你可以使用 <code>Queue::later</code> 方法来完成这件事情:</p>
+<pre><code>$date = Carbon::now()-&gt;addMinutes(15);
+
+Queue::later($date, new SendEmail($message));</code></pre>
+<p>在这个例子中，我们使用 <a href="https://github.com/briannesbitt/Carbon">Carbon</a> 日期类库来指定我们希望队列工作希望延迟的时间，另外你也可发送一个整数来设置你希望延迟的秒数。</p>
+<blockquote>
+<p><strong>注意:</strong> 在 Amazon SQS 服务中，有最大 900 秒（ 15 分钟 ）的限制。</p>
+</blockquote>
+<h4>将 Eloquent 模型放进队列</h4>
+<p>如果你队列工作的构造器接收一个 Eloquent 模型，只有这个模型的标记（ identifier ） 会被序列化后放到队列中。当工作真正开始被处理的时候，队列系统会自动从数据库中重新取得完整的模型实例。这个对你的网站应用程序来说是完全透明的，并且预防一些在序列化完整 Eloquent 模型实例时可能遇到的问题。</p>
+<h4>删除一个处理中的工作</h4>
+<p>一旦一个工作被处理过后，这个工作必须从队列中删除。假如在工作执行后没有发生错误，这个将会自动完成。</p>
+<p>如果你希望能够手动删除或着释放工作，在 <code>Illuminate\Queue\InteractsWithQueue</code> trait 中提供 <code>release</code> 以及 <code>delete</code> 方法的接口。其中 <code>release</code> 方法接受单一一个值：你想要等待工作再次能够执行的秒数。</p>
+<pre><code>public function handle(SendEmail $job)
+{
+    if (true) {
+        $this-&gt;release(30);
+    }
+}</code></pre>
+<h4>释放一个工作回到队列中</h4>
+<p>假如在工作执行后发生错误，这个工作将会自动被释放回到队列之中，如此一来便能够再次尝试执行工作。工作会一直被释放回队列直到到达应用程序的尝试上限。这个上限数值可以在使用 <code>queue:listen</code> 或 <code>queue:work</code> Artisan 命令时候借由 <code>--tries</code> 开关来设置。</p>
+<h4>检查工作执行次数</h4>
+<p>当一个工作执行后发生错误，这个工作将会自动的释放回队列当中，你可以透过 <code>attempts</code> 方法来检查这个工作已经被执行的次数：</p>
+<pre><code>if ($this-&gt;attempts() &gt; 3) {
+    //
+}</code></pre>
+<blockquote>
+<p><strong>注意:</strong> 你的命令处理类别必须使用 <code>Illuminate\Queue\InteractsWithQueue</code> 这个 trait 才能够使用这个方法。</p>
+</blockquote>
+<p><a name="more-dispatch-methods"></a></p>
+<h2>更多调度的方法</h2>
+<h3>Mapping Command Properties From Requests</h3>
+<p>It is very common to map HTTP request variables into jobs. So, instead of forcing you to do this manually for each request, Lumen provides some helper methods to make it a cinch. Let's take a look at the <code>dispatchFrom</code> method available from Closure routes and controller methods:</p>
+<pre><code>$this-&gt;dispatchFrom('Command\Class\Name', $request);</code></pre>
+<p>This method will examine the constructor of the job class it is given, and then extract variables from the HTTP request (or any other <code>ArrayAccess</code> object) to fill the needed constructor parameters of the job. So, if our job class accepts a <code>firstName</code> variable in its constructor, the job bus will attempt to pull the <code>firstName</code> parameter from the HTTP request.</p>
+<p>You may also pass an array as the third argument to the <code>dispatchFrom</code> method. This array will be used to fill any constructor parameters that are not available on the request:</p>
+<pre><code>$this-&gt;dispatchFrom('Command\Class\Name', $request, [
+    'firstName' =&gt; 'Taylor',
+]);</code></pre>
+<p><a name="queueing-closures"></a></p>
+<h2>Queueing Closures</h2>
+<blockquote>
+<p><strong>Note:</strong> 使用队列闭包的话, 你需要安装 <code>jeremeamia/superclosure</code> (~2.0) </p>
+</blockquote>
+<p>你也可以推送一个闭包去队列，这个方法非常的方便及快速的来处理需要使用队列的简单的任务：</p>
+<h4>推送一个闭包至队列</h4>
+<pre><code>Queue::push(function($job) use ($id) {
+    Account::delete($id);
+
+    $job-&gt;delete();
+});</code></pre>
+<blockquote>
+<p><strong>注意:</strong> 要让一个组件变量可以在队列闭包中可以使用我们会通过 <code>use</code> 命令，试着发送主键及重复使用的相关模块在你的队列工作中，这可以避免其他的序列化行为。</p>
+</blockquote>
+<p>当使用 Iron.io <a href="#push-queues">push queues</a> 时,你应该在队列闭包中采取一些其他的预防措施，我们应该在执行工作收到队列数据时检查token是否真来自 Iron.io，举例来说你推送一个队列工作到 <code>https://yourapp.com/queue/receive?token=SecretToken</code>，接下来在你的工作收到队列的请求时，你就可以检查token的值是否正确。</p>
+<p><a name="running-the-queue-listener"></a></p>
+<h2>执行一个队列监听</h2>
+<p>Lumen 内含一个 Artisan 命令，它将推送到队列的工作拉来下执行，你可以使用 <code>queue:listen</code> 命令，来执行这件常驻任务：</p>
+<h4>开始队列监听</h4>
+<pre><code>php artisan queue:listen</code></pre>
+<p>你也可以指定特定队列连接让监听器使用：</p>
+<pre><code>php artisan queue:listen connection</code></pre>
+<p>注意当这个任务开始时，这将会一直持续执行到他被手动停止，你也可以使用一个处理监控如 <a href="http://supervisord.org/">Supervisor</a> 来确保这个队列监听不会停止执行。</p>
+<p>你也可以在 <code>listen</code> 命令中使用逗号分隔的队列连接，来设置不同队列连接的优先层级：</p>
+<pre><code>php artisan queue:listen --queue=high,low</code></pre>
+<p>在这个范列中，总是会优先处理 <code>high-connection</code> 中的工作，然后才处理 <code>low-connection</code>。</p>
+<h4>指定工作超时参数</h4>
+<p>你也可以设置给每个工作允许执行的秒数：</p>
+<pre><code>php artisan queue:listen --timeout=60</code></pre>
+<h4>指定队列休息时间</h4>
+<p>此外，你也可以指定让监听器在拉取新工作时要等待几秒：</p>
+<pre><code>php artisan queue:listen --sleep=5</code></pre>
+<p>注意队列只会在工作时休息，假如有许多可执行的工作，队列会持续的处理工作而不会休息</p>
+<h4>处理队列上的第一个工作</h4>
+<p>当你只想处理队列上的一个工作你可以使用 <code>queue:work</code> Artisan 命令：
+php artisan queue:work</p>
+<p><a name="daemon-queue-worker"></a></p>
+<h2>常驻队列处理器</h2>
+<p>在 <code>queue:work</code> 中也包含了一个 <code>--daemon</code> 选项，强迫队列处理器持续处理工作，而不会每次都重新启动框架，这个作法比起 <code>queue:listen</code> 可有效减少 CPU 使用量，但是却增加了布署时，对于处理中队列任务的复杂性。</p>
+<p>要启动一个常驻的队列处理器，使用 <code>--daemon</code>：</p>
+<pre><code>php artisan queue:work connection --daemon
+
+php artisan queue:work connection --daemon --sleep=3
+
+php artisan queue:work connection --daemon --sleep=3 --tries=3</code></pre>
+<p>如你所见 <code>queue:work</code> 命令支持 <code>queue:listen</code> 大多相同的选项参数，你也可使用 <code>php artisan help queue:work</code> 命令来观看全部可用的选项参数。</p>
+<h3>布署常驻队列处理器</h3>
+<p>最简单布署一个应用程序使用常驻队列处理器的方式，就是将应用程序在开始布署时转成维护模式，你可以使用 <code>php artisan down</code> 命令来完成这件事情，当这个应用程序在维护模式，Lumen 将不会允许任何来自队列上的新工作，但会持续的处理已存在的工作。</p>
+<p>要重新启动 <code>queue</code> 也是非常容易，请将底下命令加到部署命令：</p>
+<pre><code>php artisan queue:restart</code></pre>
+<p>上述命令会在执行完目前的工作后，重新启动队列。</p>
+<blockquote>
+<p><strong>注意:</strong> 这个命令依赖缓存系统来排定重新启动任务。默认 APCu 无法在命令提示字符中工作。如果你正在使用 APCu 请将 <code>apc.enable_cli=1</code> 加到你的 APCu 设置当中。</p>
+</blockquote>
+<h3>撰写常驻队列处理器</h3>
+<p>常驻队列处理器不会在处理每一个工作之前都重新启动框架。因此，你应该注意并小心地在工作处理完成之前释放占用的资源。例如，如果你正在使用 GD 函式库操作图片，当你完成工作的时候，你应该使用 <code>imagedestroy</code> 方法来释放占用的内存。</p>
+<p>同样地，数据库连接可能在长时间执行的队列处理器中断线，你可以使用 <code>DB::reconnect</code> 方法来确保你每次都有一个全新的连接。</p>
+<p><a name="failed-jobs"></a></p>
+<h2>已失败的工作</h2>
+<p>Since things don't always go as planned, sometimes your queued jobs will fail. Don't worry, it happens to the best of us! Lumen and Lumen include a convenient way to specify the maximum number of times a job should be attempted. After a job has exceeded this amount of attempts, it will be inserted into a <code>failed_jobs</code> table.</p>
+<p>The <code>failed_jobs</code> table should have a schema like the following:</p>
+<p>事情往往不会如你预期的一样，有时候你推送工作到队列会失败，别担心，Lumen 包含一个简单的方法去指定一个工作最多可以被执行几次，在工作被执行到一定的次数时，他将会添加至 <code>failed_jobs</code> 数据表里，下面是表结构: </p>
+<pre><code>Schema::create('failed_jobs', function(Blueprint $table)
+{
+    $table-&gt;increments('id');
+    $table-&gt;text('connection');
+    $table-&gt;text('queue');
+    $table-&gt;text('payload');
+    $table-&gt;timestamp('failed_at');
+});</code></pre>
+<p>你可以指定一个最大值来限制一个工作应该最多被执行几次，在你执行 <code>queue:listen</code> 时加上 <code>--tries</code>：</p>
+<pre><code>php artisan queue:listen connection-name --tries=3</code></pre>
+<p>假如你会想注册一个事件，这个事件会将会在队列失败时被调用，你可以使用 <code>Queue::failing</code> 方法，这个事件是一个很好的机会让你可以通知你的团队通过 e-mail 或 <a href="https://www.hipchat.com">HipChat</a>。</p>
+<pre><code>Queue::failing(function($connection, $job, $data) {
+    //
+});</code></pre>
+<p>你可能够直接在队列工作类别中定义一个 <code>failed</code> 方法，这让你能够在工作失败时候，执行一些特定的动作：</p>
+<pre><code>public function failed()
+{
+    // Called when the job is failing...
+}</code></pre>
+<h3>重新尝试失败的工作</h3>
+<p>要看到所有失败的工作，你可以使用 <code>queue:failed</code> 命令：</p>
+<pre><code>php artisan queue:failed</code></pre>
+<p>这个 <code>queue:failed</code> 命令将会列出工作 ID、连接、队列名称及失败的时间，可以使用工作 ID 重新执行一个失败的工作，例如一个已经失败的工作的 ID 是 5，我们可以使用下面的命令：</p>
+<pre><code>php artisan queue:retry 5</code></pre>
+<p>假如你想删除一个失败的工作，可以使用 <code>queue:forget</code> 命令：</p>
+<pre><code>php artisan queue:forget 5</code></pre>
+<p>要删除全部失败的工作，可以使用 <code>queue:flush</code> 命令：</p>
+<pre><code>php artisan queue:flush</code></pre>
+        </article>
+    </div>
+
+	<footer class="main">
+		<ul>
+			<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+		</ul>
+		<p>Laravel is a trademark of Taylor Otwell. Copyright &copy; Taylor Otwell.</p>
+		<p class="less-significant"><a href="http://jackmcdade.com">Design by Jack McDade</a></p>
+	</footer>
+	<script src="assets/js/laravel.js"></script>
+	<script src="assets/js/viewport-units-buggyfill.js"></script>
+	<script>window.viewportUnitsBuggyfill.init();</script></body>
+</html>

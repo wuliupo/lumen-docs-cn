@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>HTTP 路由 - Lumen 中文文档
+</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="author" content="Laravel 中国">
+	<meta name="description" content="    HTTP 路由,基础路由,路由参数,路由命名,路由组,CSRF 保护,请求方法欺骗,抛出 404 错误,基础路由,您将在 app/Http/routes.php 中定义应用中的大多数路由，这个文件被 bootstrap/app.php 加载。 就如 Laravel 一样, 大部分路由只需要接受一个 URI 和 一个 闭包(Closure) 参数：,基本的 GET 路由,$app-&gt;get(&#039;...
+">
+	<meta name="keywords" content="lumen,微框架,Laravel微框架,lumen中国,lumen中文,lumen框架中文,lumen文档,lumen框架中国,lumen中文文档,lumen教程">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if lte IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" href="assets/css/lumen.css">
+</head>
+<body class="docs language-php">
+
+	<span class="overlay"></span>
+
+	<nav class="main">
+		<div class="container">
+            <a href="./" class="brand">
+			<span class="logo">
+				<svg xmlns="http://www.w3.org/2000/svg" class="iconic iconic-lightbulb" width="128" height="128" viewBox="0 0 128 128">
+                    <g class="iconic-metadata">
+                        <title>Lightbulb</title>
+                    </g>
+                    <defs>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-0">
+                            <path d="M16.583 94h33.417v2.667l-39.083 6.375-.333-6.417z"></path>
+                        </clipPath>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-1">
+                            <path d="M64 57l-14.5 8.25v16.75h-34.25l-1.5-16 50.25-23z"></path>
+                        </clipPath>
+                    </defs>
+                    <g data-width="64" data-height="128" class="iconic-lightbulb-lg iconic-container iconic-lg" display="inline" transform="translate(32)">
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M44 122l-23.834 4.001"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M48 112l-32 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M48 102l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-0)" stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M48 92.5l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-6 iconic-property-stroke" d="M60 54l-20 9v18.75" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M24 68v13.75" fill="none"></path>
+                        <path d="M47 94h-30c-1.657 0-3.221-1.325-3.493-2.959l-1.014-6.082c-.272-1.634.85-2.959 2.507-2.959h34c1.657 0 2.779 1.325 2.507 2.959l-1.014 6.082c-.272 1.634-1.836 2.959-3.493 2.959z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M60 38l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M60 22l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M60 6l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M30 4.114l-26 11.886" fill="none"></path>
+                    </g>
+                    <g data-width="16" data-height="32" class="iconic-lightbulb-md iconic-container iconic-md" display="none" transform="scale(4) translate(8)">
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M5.5 31.5l5-1.429" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M4.5 29.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M4.5 27.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M4.5 25.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M12.5 18.5l-2 1v3.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M5.5 23v-1.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M14.5 11.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M14.5 5.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M10.5 1.5l-9 4" fill="none"></path>
+                        <path d="M11 25h-6c-.552 0-1.142-.425-1.316-.949l-.367-1.103c-.175-.524.131-.949.684-.949h8c.552 0 .858.425.684.949l-.367 1.103c-.175.524-.764.949-1.316.949z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                    <g data-width="10" data-height="16" class="iconic-lightbulb-sm iconic-container iconic-sm" display="none" transform="scale(8) translate(3)">
+                        <path d="M7 14c0 1.105-.895 2-2 2s-2-.895-2-2" class="iconic-lightbulb-screw iconic-property-accent iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M8 8l-2 1v2" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M4 10.5v.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M1 8l8-4" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M7 1l-6 3" fill="none"></path>
+                        <path d="M1.776 12.553l-.553-1.106c-.123-.247 0-.447.276-.447h7c.276 0 .4.2.276.447l-.553 1.106c-.124.247-.448.447-.724.447h-5c-.276 0-.6-.2-.724-.447z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                </svg>			</span>
+
+                Lumen
+            </a>
+
+			<div class="responsive-sidebar-nav">
+				<a href="#" class="toggle-slide menu-link btn">&#9776;</a>
+			</div>
+
+										
+			<ul class="main-nav">
+				<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+			</ul>
+		</div>
+	</nav>
+
+	    <nav id="slide-menu" class="slide-menu" role="navigation">
+
+        <div class="brand">
+            <a href="./">
+                <img src="assets/img/laravel-logo-white.png" height="50">
+            </a>
+        </div>
+
+        <ul class="slide-main-nav">
+            <li><a href="./">Home</a></li>
+            <li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+        </ul>
+
+        <div class="slide-docs-nav">
+            <h2>文档</h2>
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </div>
+
+    </nav>
+
+    <div class="docs-wrapper container">
+
+        <section class="sidebar">
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </section>
+
+        <article>
+            <h1>HTTP 路由</h1>
+<ul>
+<li><a href="#basic-routing">基础路由</a></li>
+<li><a href="#route-parameters">路由参数</a></li>
+<li><a href="#named-routes">路由命名</a></li>
+<li><a href="#route-groups">路由组</a></li>
+<li><a href="#csrf-protection">CSRF 保护</a></li>
+<li><a href="#method-spoofing">请求方法欺骗</a></li>
+<li><a href="#throwing-404-errors">抛出 404 错误</a></li>
+</ul>
+<p><a name="basic-routing"></a></p>
+<h2>基础路由</h2>
+<p>您将在 <code>app/Http/routes.php</code> 中定义应用中的大多数路由，这个文件被 <code>bootstrap/app.php</code> 加载。 就如 Laravel 一样, 大部分路由只需要接受一个 URI 和 一个 闭包(Closure) 参数：</p>
+<h4>基本的 GET 路由</h4>
+<pre><code>$app-&gt;get('/', function() {
+    return 'Hello World';
+});</code></pre>
+<h4>其他基础路由</h4>
+<pre><code>$app-&gt;post('foo/bar', function() {
+    return 'Hello World';
+});
+
+$app-&gt;patch('foo/bar', function() {
+    //
+});
+
+$app-&gt;put('foo/bar', function() {
+    //
+});
+
+$app-&gt;delete('foo/bar', function() {
+    //
+});</code></pre>
+<p>你可以使用 <code>url</code> 帮助函数进行 URL 生成: </p>
+<pre><code>$url = url('foo');</code></pre>
+<h4>把请求导向控制器</h4>
+<p>请查阅此文档 <a href="controllers">controllers</a>.</p>
+<p><a name="route-parameters"></a></p>
+<h2>路由参数</h2>
+<p>你可以从 URL 中抓取你想要的参数. </p>
+<h4>基本路由参数</h4>
+<pre><code>$app-&gt;get('user/{id}', function($id) {
+    return 'User '.$id;
+});</code></pre>
+<h4>正则表达式约束</h4>
+<blockquote>
+<p><strong>Note:</strong> 这个地方和 Laravel 不兼容, 如果你想升级到 Laravel, 请把你的正则表达式约束放置在 <code>where</code> 方法里面.</p>
+</blockquote>
+<pre><code>$app-&gt;get('user/{name:[A-Za-z]+}', function($name) {
+    //
+});</code></pre>
+<p><a name="named-routes"></a></p>
+<h2>命名路由</h2>
+<p>命名路由让你更方便于产生 URL 与重定向特定路由。您可以用 <code>as</code> 的数组键值指定名称给路由：</p>
+<pre><code>$app-&gt;get('user/profile', ['as' =&gt; 'profile', function() {
+    //
+}]);</code></pre>
+<p>也可以为控制器动作指定路由名称：</p>
+<pre><code>$app-&gt;get('user/profile', [
+    'as' =&gt; 'profile', 'uses' =&gt; 'UserController@showProfile'
+]);</code></pre>
+<p>现在你可以使用路由名称产生 URL 或进行重定向：</p>
+<pre><code>$url = route('profile');
+
+$redirect = redirect()-&gt;route('profile');</code></pre>
+<p><a name="route-groups"></a></p>
+<h2>路由群组</h2>
+<p>有时候, 你想对好几个路由进行统一逻辑处理, 如中间件, 你可以使用路由群组功能. </p>
+<p><a name="route-group-middleware"></a></p>
+<h3>中间件</h3>
+<p>中间件会对路由群组里面的路由进行作用, 使用参数 <code>middleware</code> 进行设定, 可以设定多个中间件, 请注意中间件的顺序是执行的顺序. </p>
+<pre><code>$app-&gt;group(['middleware' =&gt; 'foo|bar'], function($app)
+{
+    $app-&gt;get('/', function() {
+        // Uses Foo &amp; Bar Middleware
+    });
+
+    $app-&gt;get('user/profile', function() {
+        // Uses Foo &amp; Bar Middleware
+    });
+});</code></pre>
+<p><a name="route-group-namespace"></a></p>
+<h3>命名空间</h3>
+<p>您一样可以在 group 属性数组中使用 <code>namespace</code> 参数，指定在这群组中控制器的命名空间：</p>
+<pre><code>$app-&gt;group(['namespace' =&gt; 'Admin'], function() {
+    // Controllers Within The "App\Http\Controllers\Admin" Namespace
+});</code></pre>
+<p><a name="csrf-protection"></a></p>
+<h2>CSRF 保护</h2>
+<blockquote>
+<p><strong>Note:</strong> 你必须 <a href="session#session-usage">开启会话</a> 来使用此功能.</p>
+</blockquote>
+<p>Lumen 提供简易的方法，让您可以保护您的应用程序不受到 CSRF (<a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery">跨网站请求伪造</a>) 攻击。跨网站请求伪造是一种恶意的攻击，借以代表经过身份验证的用户执行未经授权的命令。</p>
+<p>Lumen 会自动在每一位用户的 session 中放置随机的 token ，这个 token 将被用来确保经过验证的用户是实际发出请求至应用程序的用户：</p>
+<h4>插入 CSRF Token 到表单</h4>
+<pre><code>&lt;input type="hidden" name="_token" value="&lt;?php echo csrf_token(); ?&gt;"&gt;</code></pre>
+<p>当然也可以在 Blade <a href="templates">模板引擎</a> 使用：</p>
+<pre><code>&lt;input type="hidden" name="_token" value="{{ csrf_token() }}"&gt;</code></pre>
+<p>您不需要手动验证在 POST、PUT、DELETE 请求的 CSRF token。如果你在 <code>bootstrap/app.php</code> 文件里面开启的话, <code>Laravel\Lumen\Http\Middleware\VerifyCsrfToken</code> <a href="middleware">HTTP 中间件</a> 将保存在 session 中的请求输入的 token 配对来验证 token 。</p>
+<h4>X-CSRF-TOKEN</h4>
+<p>除了寻找 CSRF token 作为「POST」参数，中间件也检查 <code>X-XSRF-TOKEN</code> 请求头，比如，你可以把 token 存放在 meta 标签中, 然后使用 jQuery 将它加入到所有的请求头中：</p>
+<pre><code>&lt;meta name="csrf-token" content="{{ csrf_token() }}" /&gt;
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});</code></pre>
+<p>现在所有的 AJAX 请求会自动加入 CSRF token：</p>
+<pre><code>$.ajax({
+   url: "/foo/bar",
+})</code></pre>
+<h4>X-XSRF-TOKEN</h4>
+<p>Lumen 也在 cookie 中存放了名为 <code>XSRF-TOKEN</code> 的 CSRF token。你可以使用这个 cookie 值来设置 <code>X-XSRF-TOKEN</code> 请求头。一些 Javascript 框架，比如 Angular ，会自动设置这个值。</p>
+<blockquote>
+<p>Note:  <code>X-CSRF-TOKEN</code> 和 <code>X-XSRF-TOKEN</code> 的不同点在于前者使用的是纯文本而后者是一个加密的值，因为在 Lumen 中 cookies 始终是被加密过的。如果你使用 <code>csrf_token()</code> 函数来作为 token 的值， 你需要设置 <code>X-CSRF-TOKEN</code> 请求头。</p>
+</blockquote>
+<p><a name="method-spoofing"></a></p>
+<h2>请求方法欺骗</h2>
+<p>HTML 表单没有支持 <code>PUT</code> 、<code>PATCH</code> 或 <code>DELETE</code> 请求。所以当定义 <code>PUT</code> 、<code>PATCH</code> 以及 <code>DELETE</code> 路由并在 HTML 表单中被调用的时候，您将需要添加隐藏 <code>_method</code> 字段在表单中。</p>
+<p>发送的 <code>_method</code> 字段对应的值会被当做 HTTP 请求方法。举例来说：</p>
+<pre><code>&lt;form action="/foo/bar" method="POST"&gt;
+    &lt;input type="hidden" name="_method" value="PUT"&gt;
+    &lt;input type="hidden" name="_token" value="{{ csrf_token() }}"&gt;
+&lt;/form&gt;</code></pre>
+<p><a name="throwing-404-errors"></a></p>
+<h2>抛出 404 错误</h2>
+<p>这里有两种方法从路由手动触发 404 错误。</p>
+<p>首先，您可以使用 <code>abort</code> 辅助函数：</p>
+<pre><code>abort(404);</code></pre>
+<p><code>abort</code> 辅助函数只是简单抛出带有特定状态代码的 <code>Symfony\Component\HttpFoundation\Exception\HttpException</code> 异常 。</p>
+<p>第二，您可以手动抛出 Symfony\Component\HttpKernel\Exception\NotFoundHttpException 的实体。</p>
+<p>有关如何处理 404 异常状况和自定响应的更多信息，可以参考 <a href="errors#http-exceptions">错误</a> 章节内的文档。</p>
+        </article>
+    </div>
+
+	<footer class="main">
+		<ul>
+			<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+		</ul>
+		<p>Laravel is a trademark of Taylor Otwell. Copyright &copy; Taylor Otwell.</p>
+		<p class="less-significant"><a href="http://jackmcdade.com">Design by Jack McDade</a></p>
+	</footer>
+	<script src="assets/js/laravel.js"></script>
+	<script src="assets/js/viewport-units-buggyfill.js"></script>
+	<script>window.viewportUnitsBuggyfill.init();</script></body>
+</html>

@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>事件 - Lumen 中文文档
+</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="author" content="Laravel 中国">
+	<meta name="description" content="    事件,基本用法,事件处理队列,事件订阅者,基本用法,Lumen 的事件功能简单的使用观察者模式实现, 允许你订阅或者监听应用里面发生的事件. ,订阅事件,Note: 如果你想使用 Event facade 的话, 请在 bootstrap/app.php 文件里面把 $app-&gt;withFacades()去掉注释. ,使用此方法 Event::listen 来订阅事件: ,Event::li...
+">
+	<meta name="keywords" content="lumen,微框架,Laravel微框架,lumen中国,lumen中文,lumen框架中文,lumen文档,lumen框架中国,lumen中文文档,lumen教程">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if lte IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" href="assets/css/lumen.css">
+</head>
+<body class="docs language-php">
+
+	<span class="overlay"></span>
+
+	<nav class="main">
+		<div class="container">
+            <a href="./" class="brand">
+			<span class="logo">
+				<svg xmlns="http://www.w3.org/2000/svg" class="iconic iconic-lightbulb" width="128" height="128" viewBox="0 0 128 128">
+                    <g class="iconic-metadata">
+                        <title>Lightbulb</title>
+                    </g>
+                    <defs>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-0">
+                            <path d="M16.583 94h33.417v2.667l-39.083 6.375-.333-6.417z"></path>
+                        </clipPath>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-1">
+                            <path d="M64 57l-14.5 8.25v16.75h-34.25l-1.5-16 50.25-23z"></path>
+                        </clipPath>
+                    </defs>
+                    <g data-width="64" data-height="128" class="iconic-lightbulb-lg iconic-container iconic-lg" display="inline" transform="translate(32)">
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M44 122l-23.834 4.001"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M48 112l-32 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M48 102l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-0)" stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M48 92.5l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-6 iconic-property-stroke" d="M60 54l-20 9v18.75" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M24 68v13.75" fill="none"></path>
+                        <path d="M47 94h-30c-1.657 0-3.221-1.325-3.493-2.959l-1.014-6.082c-.272-1.634.85-2.959 2.507-2.959h34c1.657 0 2.779 1.325 2.507 2.959l-1.014 6.082c-.272 1.634-1.836 2.959-3.493 2.959z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M60 38l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M60 22l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M60 6l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M30 4.114l-26 11.886" fill="none"></path>
+                    </g>
+                    <g data-width="16" data-height="32" class="iconic-lightbulb-md iconic-container iconic-md" display="none" transform="scale(4) translate(8)">
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M5.5 31.5l5-1.429" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M4.5 29.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M4.5 27.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M4.5 25.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M12.5 18.5l-2 1v3.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M5.5 23v-1.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M14.5 11.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M14.5 5.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M10.5 1.5l-9 4" fill="none"></path>
+                        <path d="M11 25h-6c-.552 0-1.142-.425-1.316-.949l-.367-1.103c-.175-.524.131-.949.684-.949h8c.552 0 .858.425.684.949l-.367 1.103c-.175.524-.764.949-1.316.949z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                    <g data-width="10" data-height="16" class="iconic-lightbulb-sm iconic-container iconic-sm" display="none" transform="scale(8) translate(3)">
+                        <path d="M7 14c0 1.105-.895 2-2 2s-2-.895-2-2" class="iconic-lightbulb-screw iconic-property-accent iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M8 8l-2 1v2" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M4 10.5v.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M1 8l8-4" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M7 1l-6 3" fill="none"></path>
+                        <path d="M1.776 12.553l-.553-1.106c-.123-.247 0-.447.276-.447h7c.276 0 .4.2.276.447l-.553 1.106c-.124.247-.448.447-.724.447h-5c-.276 0-.6-.2-.724-.447z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                </svg>			</span>
+
+                Lumen
+            </a>
+
+			<div class="responsive-sidebar-nav">
+				<a href="#" class="toggle-slide menu-link btn">&#9776;</a>
+			</div>
+
+										
+			<ul class="main-nav">
+				<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+			</ul>
+		</div>
+	</nav>
+
+	    <nav id="slide-menu" class="slide-menu" role="navigation">
+
+        <div class="brand">
+            <a href="./">
+                <img src="assets/img/laravel-logo-white.png" height="50">
+            </a>
+        </div>
+
+        <ul class="slide-main-nav">
+            <li><a href="./">Home</a></li>
+            <li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+        </ul>
+
+        <div class="slide-docs-nav">
+            <h2>文档</h2>
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </div>
+
+    </nav>
+
+    <div class="docs-wrapper container">
+
+        <section class="sidebar">
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </section>
+
+        <article>
+            <h1>事件</h1>
+<ul>
+<li><a href="#basic-usage">基本用法</a></li>
+<li><a href="#queued-event-handlers">事件处理队列</a></li>
+<li><a href="#event-subscribers">事件订阅者</a></li>
+</ul>
+<p><a name="basic-usage"></a></p>
+<h2>基本用法</h2>
+<p>Lumen 的事件功能简单的使用观察者模式实现, 允许你订阅或者监听应用里面发生的事件. </p>
+<h4>订阅事件</h4>
+<blockquote>
+<p><strong>Note:</strong> 如果你想使用 <code>Event</code> facade 的话, 请在 <code>bootstrap/app.php</code> 文件里面把 <code>$app-&gt;withFacades()</code>去掉注释. </p>
+</blockquote>
+<p>使用此方法 <code>Event::listen</code> 来订阅事件: </p>
+<pre><code>Event::listen(
+    'PodcastWasPurchased', 'EmailPurchaseConfirmation@handle'
+);</code></pre>
+<blockquote>
+<p><strong>Note:</strong> 你可以把事件注册都写到 <a href="providers">服务提供者</a> 文件里面.</p>
+</blockquote>
+<p>当一个事件触发的时候, 事件对象会把调用监听者的  <code>handle</code>  方法: </p>
+<pre><code>class EmailPurchaseConfirmation {
+
+    public function handle(PodcastWasPurchased $event)
+    {
+        //
+    }
+
+}</code></pre>
+<p>你可以把监听者的类放在任何位置, 如统一放到 <code>app/Events</code>  文件夹里面.</p>
+<h4>触发事件</h4>
+<p>现在我们准备好使用 <code>Event</code> facade 触发我们的事件：</p>
+<pre><code>$response = Event::fire(new PodcastWasPurchased($podcast));</code></pre>
+<p><code>fire</code> 方法返回一个响应的数组，让你可以用来控制你的应用程序接下来要有什么反应。</p>
+<p>你也可以使用 <code>event</code> 辅助方法来触发事件:</p>
+<pre><code>event(new PodcastWasPurchased($podcast));</code></pre>
+<h4>监听器闭包</h4>
+<p>你甚至可以不需对事件建立对应的处理类。举个例子，在你的 <code>EventServiceProvider</code> 的 <code>boot</code> 方法里，你可以做下面这件事：</p>
+<pre><code>Event::listen('App\Events\PodcastWasPurchased', function($event) {
+    // Handle the event...
+});</code></pre>
+<h4>停止继续传递事件</h4>
+<p>有时候你会希望停止继续传递事件到其他监听器。你可以通过从处理程序返回 <code>false</code> 来做到这件事：</p>
+<pre><code>Event::listen('App\Events\PodcastWasPurchased', function($event) {
+    // Handle the event...
+
+    return false;
+});</code></pre>
+<p><a name="queued-event-handlers"></a></p>
+<h2>事件处理队列</h2>
+<p>需要把事件处理程序放到 <a href="queues">队列</a> 里面吗？你可以使用 <code>Illuminate\Contracts\Queue\ShouldBeQueued</code> 接口来标识出来: </p>
+<pre><code>use Illuminate\Contracts\Queue\ShouldBeQueued;
+
+class SendPurchaseConfirmation implements ShouldBeQueued {
+
+    public function (PurchasePodcast $event)
+    {
+        //
+    }
+
+}</code></pre>
+<p>下次当某个事件被触发的时候, 监听器就会被自动加载到事件分发器里面去了. </p>
+<blockquote>
+<p><strong>Note:</strong>当然, 你需要配置 <a href="queues">队列设置</a> 才能使用此功能.</p>
+</blockquote>
+<p>当处理程序被队列执行，如果没有异常被丢出，在执行后该队列中的任务将会自动被删除。你也可以手动取用队列中的任务的 <code>delete</code> 和 <code>release</code> 方法。队列处理程序默认会引入的 <code>Illuminate\Queue\InteractsWithQueue</code> trait，让你可以取用这些方法: </p>
+<pre><code>public function handle(PodcastWasPurchased $event)
+{
+    if (true) {
+        $this-&gt;release(30);
+    }
+}</code></pre>
+        </article>
+    </div>
+
+	<footer class="main">
+		<ul>
+			<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+		</ul>
+		<p>Laravel is a trademark of Taylor Otwell. Copyright &copy; Taylor Otwell.</p>
+		<p class="less-significant"><a href="http://jackmcdade.com">Design by Jack McDade</a></p>
+	</footer>
+	<script src="assets/js/laravel.js"></script>
+	<script src="assets/js/viewport-units-buggyfill.js"></script>
+	<script>window.viewportUnitsBuggyfill.init();</script></body>
+</html>

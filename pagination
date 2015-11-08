@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>分页 - Lumen 中文文档
+</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="author" content="Laravel 中国">
+	<meta name="description" content="    分页,配置,使用,追加分页链接,转换至 JSON,配置,在其他的框架中，实现分页是令人感到苦恼的事，但是 Lumen 令它实现起来变得轻松。 Lumen 可以产生基于当前页面的智能「范围」链接，所产生的 HTML 兼容 Bootstrap CSS 框架.,当然, 如果你在开发 JSON API 接口的话, 分页器还可以给你非常有用的 JSON 返回, 包括上一页下一页的数据接口 URL 信息. ,...
+">
+	<meta name="keywords" content="lumen,微框架,Laravel微框架,lumen中国,lumen中文,lumen框架中文,lumen文档,lumen框架中国,lumen中文文档,lumen教程">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--[if lte IE 9]>
+		<script src="assets/js/html5shiv.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" href="assets/css/lumen.css">
+</head>
+<body class="docs language-php">
+
+	<span class="overlay"></span>
+
+	<nav class="main">
+		<div class="container">
+            <a href="./" class="brand">
+			<span class="logo">
+				<svg xmlns="http://www.w3.org/2000/svg" class="iconic iconic-lightbulb" width="128" height="128" viewBox="0 0 128 128">
+                    <g class="iconic-metadata">
+                        <title>Lightbulb</title>
+                    </g>
+                    <defs>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-0">
+                            <path d="M16.583 94h33.417v2.667l-39.083 6.375-.333-6.417z"></path>
+                        </clipPath>
+                        <clipPath id="iconic-size-lg-lightbulb-clip-1">
+                            <path d="M64 57l-14.5 8.25v16.75h-34.25l-1.5-16 50.25-23z"></path>
+                        </clipPath>
+                    </defs>
+                    <g data-width="64" data-height="128" class="iconic-lightbulb-lg iconic-container iconic-lg" display="inline" transform="translate(32)">
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M44 122l-23.834 4.001"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M48 112l-32 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M48 102l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-0)" stroke="#000" stroke-width="4" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M48 92.5l-32 6" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-6 iconic-property-stroke" d="M60 54l-20 9v18.75" fill="none"></path>
+                        <path clip-path="url(#iconic-size-lg-lightbulb-clip-1)" stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M24 68v13.75" fill="none"></path>
+                        <path d="M47 94h-30c-1.657 0-3.221-1.325-3.493-2.959l-1.014-6.082c-.272-1.634.85-2.959 2.507-2.959h34c1.657 0 2.779 1.325 2.507 2.959l-1.014 6.082c-.272 1.634-1.836 2.959-3.493 2.959z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M60 38l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M60 22l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M60 6l-56 26" fill="none"></path>
+                        <path stroke="#000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M30 4.114l-26 11.886" fill="none"></path>
+                    </g>
+                    <g data-width="16" data-height="32" class="iconic-lightbulb-md iconic-container iconic-md" display="none" transform="scale(4) translate(8)">
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-4 iconic-property-accent iconic-property-stroke" d="M5.5 31.5l5-1.429" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-3 iconic-property-accent iconic-property-stroke" d="M4.5 29.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-2 iconic-property-accent iconic-property-stroke" d="M4.5 27.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-linecap="round" class="iconic-lightbulb-screw iconic-lightbulb-screw-1 iconic-property-accent iconic-property-stroke" d="M4.5 25.5l7-2" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-5 iconic-property-stroke" d="M12.5 18.5l-2 1v3.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M5.5 23v-1.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M14.5 11.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M14.5 5.5l-13 6" fill="none"></path>
+                        <path stroke="#000" stroke-width="3" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M10.5 1.5l-9 4" fill="none"></path>
+                        <path d="M11 25h-6c-.552 0-1.142-.425-1.316-.949l-.367-1.103c-.175-.524.131-.949.684-.949h8c.552 0 .858.425.684.949l-.367 1.103c-.175.524-.764.949-1.316.949z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                    <g data-width="10" data-height="16" class="iconic-lightbulb-sm iconic-container iconic-sm" display="none" transform="scale(8) translate(3)">
+                        <path d="M7 14c0 1.105-.895 2-2 2s-2-.895-2-2" class="iconic-lightbulb-screw iconic-property-accent iconic-property-fill"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-4 iconic-property-stroke" d="M8 8l-2 1v2" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-3 iconic-property-stroke" d="M4 10.5v.5" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-2 iconic-property-stroke" d="M1 8l8-4" fill="none"></path>
+                        <path stroke="#000" stroke-width="2" stroke-linecap="round" class="iconic-lightbulb-coil iconic-lightbulb-coil-1 iconic-property-stroke" d="M7 1l-6 3" fill="none"></path>
+                        <path d="M1.776 12.553l-.553-1.106c-.123-.247 0-.447.276-.447h7c.276 0 .4.2.276.447l-.553 1.106c-.124.247-.448.447-.724.447h-5c-.276 0-.6-.2-.724-.447z" class="iconic-lightbulb-base iconic-property-fill"></path>
+                    </g>
+                </svg>			</span>
+
+                Lumen
+            </a>
+
+			<div class="responsive-sidebar-nav">
+				<a href="#" class="toggle-slide menu-link btn">&#9776;</a>
+			</div>
+
+										
+			<ul class="main-nav">
+				<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+			</ul>
+		</div>
+	</nav>
+
+	    <nav id="slide-menu" class="slide-menu" role="navigation">
+
+        <div class="brand">
+            <a href="./">
+                <img src="assets/img/laravel-logo-white.png" height="50">
+            </a>
+        </div>
+
+        <ul class="slide-main-nav">
+            <li><a href="./">Home</a></li>
+            <li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+        </ul>
+
+        <div class="slide-docs-nav">
+            <h2>文档</h2>
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </div>
+
+    </nav>
+
+    <div class="docs-wrapper container">
+
+        <section class="sidebar">
+                        <ul>
+<li>序言
+<ul>
+<li><a href="introduction">介绍</a></li>
+<li><a href="releases">发布记录</a></li>
+</ul></li>
+<li>开始旅程
+<ul>
+<li><a href="installation">安装</a></li>
+<li><a href="configuration">配置</a></li>
+</ul></li>
+<li>基础功能
+<ul>
+<li><a href="routing">路由</a></li>
+<li><a href="middleware">中间件</a></li>
+<li><a href="controllers">控制器</a></li>
+<li><a href="requests">请求</a></li>
+<li><a href="responses">响应</a></li>
+<li><a href="views">视图</a></li>
+</ul></li>
+<li>框架架构知识
+<ul>
+<li><a href="providers">服务供应者</a></li>
+<li><a href="container">服务容器</a></li>
+</ul></li>
+<li>服务
+<ul>
+<li><a href="cache">缓存</a></li>
+<li><a href="database">数据库</a></li>
+<li><a href="encryption">加密</a></li>
+<li><a href="errors">错误和日志</a></li>
+<li><a href="events">事件</a></li>
+<li><a href="filesystem">文件系统和云存储</a></li>
+<li><a href="helpers">帮助函数</a></li>
+<li><a href="pagination">分页</a></li>
+<li><a href="queues">队列</a></li>
+<li><a href="session">会话</a></li>
+<li><a href="templates">模版引擎</a></li>
+<li><a href="testing">单元测试</a></li>
+<li><a href="validation">表单验证</a></li>
+</ul></li>
+</ul>
+        </section>
+
+        <article>
+            <h1>分页</h1>
+<ul>
+<li><a href="#configuration">配置</a></li>
+<li><a href="#usage">使用</a></li>
+<li><a href="#appending-to-pagination-links">追加分页链接</a></li>
+<li><a href="#converting-to-json">转换至 JSON</a></li>
+</ul>
+<p><a name="configuration"></a></p>
+<h2>配置</h2>
+<p>在其他的框架中，实现分页是令人感到苦恼的事，但是 Lumen 令它实现起来变得轻松。 Lumen 可以产生基于当前页面的智能「范围」链接，所产生的 HTML 兼容 Bootstrap CSS 框架.</p>
+<p>当然, 如果你在开发 JSON API 接口的话, 分页器还可以给你非常有用的 JSON 返回, 包括上一页下一页的数据接口 URL 信息. </p>
+<p><a name="usage"></a></p>
+<h2>使用</h2>
+<p>有几种方法来分页对象。最简单的是在搜索构建器使用 <code>paginate</code> 方法或 Eloquent 模型。</p>
+<h4>对数据库结果分页</h4>
+<pre><code>$users = DB::table('users')-&gt;paginate(15);</code></pre>
+<blockquote>
+<p><strong>注意：</strong> 目前 Lumen 使用 <code>groupBy</code> 来做分页操作无法有效率的执行，如果您需要使用 <code>groupBy</code> 来分页数据集，建议您手动查找数据库，并使用 <code>Paginator::make</code>。</p>
+</blockquote>
+<h4>手动建立分页</h4>
+<p>有的时候您可能会想要从数组中对象手动建立分页实体， 您可以根据您的需要通过 <code>Illuminate\Pagination\Paginator</code> 或 <code>Illuminate\Pagination\LengthAwarePaginator</code> 实体来建立。</p>
+<h4>对 Eloquent 模型分页</h4>
+<p>您也可以对 <a href="5.0/eloquent">Eloquent</a> 模型分页:</p>
+<pre><code>$allUsers = User::paginate(15);
+
+$someUsers = User::where('votes', '&gt;', 100)-&gt;paginate(15);</code></pre>
+<p>发送给 <code>paginate</code> 方法的参数是您希望每页要显示的对象选项数目，只要您取得查找结果后，您可以在视图中显示，并使用 <code>render</code> 方法去建立分页链接：</p>
+<pre><code>&lt;div class="container"&gt;
+    @foreach ($users as $user)
+        {{ $user-&gt;name }}
+    @endforeach
+&lt;/div&gt;
+
+{!! $users-&gt;render() !!}</code></pre>
+<p>您也可以透过以下方法获得额外的分页信息：</p>
+<ul>
+<li><code>currentPage</code></li>
+<li><code>lastPage</code></li>
+<li><code>perPage</code></li>
+<li><code>hasMorePages</code></li>
+<li><code>url</code></li>
+<li><code>nextPageUrl</code></li>
+<li><code>total</code></li>
+<li><code>count</code></li>
+</ul>
+<h4>「简单分页」</h4>
+<p>如果您只是要在您的分页视图显示「上一页」和「下一页」链接，您有个选项 <code>simplePaginate</code> 方法来执行更高效率的搜索。当您不需要精准的显示页码在视图上时，这个方法在较大的数据集非常有用：</p>
+<pre><code>$someUsers = User::where('votes', '&gt;', 100)-&gt;simplePaginate(15);</code></pre>
+<h4>自定义分页 URL</h4>
+<p>您还可以透过 <code>setPath</code> 方法自定义使用的 URL：</p>
+<pre><code>$users = User::paginate();
+
+$users-&gt;setPath('custom/url');</code></pre>
+<p>上面的例子将建立 URL，类似以下内容：<a href="http://example.com/custom/url?page=2">http://example.com/custom/url?page=2</a></p>
+<p><a name="appending-to-pagination-urls"></a></p>
+<h2>追加分页链接</h2>
+<p>您可以使用 <code>appends</code> 方法增加搜索字串到分页链接中：</p>
+<pre><code>$users-&gt;appends(['sort' =&gt; 'votes']);</code></pre>
+<p>这样会产生类似下列的链接：</p>
+<pre><code>http://example.com/something?page=2&amp;sort=votes</code></pre>
+<p>如果您想要将「哈希片段」加到分页的 URL，您可以使用 <code>fragment</code> 方法：</p>
+<pre><code>$users-&gt;fragment('foo');</code></pre>
+<p>此方法调用后将产生 URL，看起来像这样：</p>
+<pre><code>http://example.com/something?page=2#foo</code></pre>
+<p><a name="converting-to-json"></a></p>
+<h2>转换至 JSON</h2>
+<p><code>Paginator</code> 类实现 <code>Illuminate\Contracts\Support\JsonableInterface</code> 接口的 <code>toJson</code> 方法。由路由返回的值，您可能将 <code>Paginator</code> 实体传换成 JSON。JSON 表单的实体会包含一些「元」信息，例如 <code>total</code>、<code>current_page</code>、<code>last_page</code>。该实体数据将可通过在 JSON 数组中 <code>data</code> 的键取得。</p>
+        </article>
+    </div>
+
+	<footer class="main">
+		<ul>
+			<li class="nav-docs"><a href="http://laravel-china.org/docs">Laravel 文档</a></li>
+<li class="nav-laracasts"><a href="https://laracasts.com" target="_blank">Laracasts</a></li>
+<li class="nav-forge"><a href="https://forge.laravel.com" target="_blank">Forge</a></li>
+<li class="nav-api" style="display:none"><a href="/api/5.0" target="_blank">API</a></li>
+<li class="dropdown">
+	<a href="https://phphub.org/" target="_blank">中文开发者社区</a>
+</li>
+<li class="dropdown">
+	<a href="https://phphub.org/topics/453" target="_blank">Slack 聊天室</a>
+</li>
+		</ul>
+		<p>Laravel is a trademark of Taylor Otwell. Copyright &copy; Taylor Otwell.</p>
+		<p class="less-significant"><a href="http://jackmcdade.com">Design by Jack McDade</a></p>
+	</footer>
+	<script src="assets/js/laravel.js"></script>
+	<script src="assets/js/viewport-units-buggyfill.js"></script>
+	<script>window.viewportUnitsBuggyfill.init();</script></body>
+</html>
