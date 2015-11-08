@@ -1,9 +1,9 @@
-# Lumen 中文文档
+# [Lumen](https://github.com/laravel/lumen) 中文文档
 
 http://lumen.laravel-china.org/docs
 
 
-Lumen 是一个由 Laravel 元件搭建而成的微框架, 由 Laravel 官方维护. Lumen 为速度而生, 是当前最快的 PHP 框架之一, 甚至比类似的微框架 Silex 速度还要快.
+Lumen 是一个由 [Laravel](https://github.com/laravel/laravel) 元件搭建而成的微框架, 由 Laravel 官方维护. Lumen 为速度而生, 是当前最快的 PHP 框架之一, 甚至比类似的微框架 [Silex](https://github.com/silexphp/Silex) 速度还要快.
 
 Lumen 比其他微框架的优点是, 构建在 Laravel 之上, 使其具备 Laravel 强大的功能, 如 路由, 依赖注入, Eloquent ORM, 数据库迁移管理, 队列和计划任务等.
 
